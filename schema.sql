@@ -8,7 +8,7 @@ CREATE TABLE `users` (
   `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `role` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `reg_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_visit` timestamp NOT NULL DEFAULT '1970-01-01 00:00:01'
+  `last_visit` timestamp NOT NULL DEFAULT '1970-01-02 00:00:01'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE `users`
@@ -18,7 +18,7 @@ ALTER TABLE `users`
   ADD KEY `role_reg_date` (`role`,`reg_date`) USING BTREE;
 
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;COMMIT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 CREATE TABLE `users_about` (
   `id` bigint(20) UNSIGNED NOT NULL,
