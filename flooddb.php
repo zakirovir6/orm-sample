@@ -80,7 +80,25 @@ for( $userId = 0; $userId < $count; $userId++)
         foreach (['country', 'firstname', 'state'] as $item)
         {
             $id = generateSnowflake($sequence, $lastTime);
-            $value = randString(70, 90);
+            if ($item == 'country')
+            {
+                $countries = ['Russia', 'USA', 'Ukraine', 'France', 'Italy', 'Spain', 'China', 'Japan', 'Korea', 'Brasil', 'Mexico'];
+                $value = $countries[array_rand($countries)];
+            }
+            elseif ( $item == 'state')
+            {
+                $states = ['NY', 'CA', 'CS', 'FL', 'IL', 'AB', 'OH', 'MA', 'MI', 'KY'];
+                $value = $states[array_rand($states)];
+            }
+            elseif ($item == 'firstname')
+            {
+                $names = ['Kirill', 'Alex', 'Vova', 'Dmitry', 'Igor', 'Michael', 'Alena', 'Max', 'Jimbo'];
+                $value = $names[array_rand($names)];
+            }
+            else
+            {
+                $value = randString( 70, 90 );
+            }
             $lineProps[] = "({$id}, {$userId}, '{$item}', '{$value}')";
         }
     }
