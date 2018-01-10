@@ -10,6 +10,10 @@ namespace TestWork\ORM;
 
 
 use TestWork\ConnectionFactory;
+use TestWork\ORM\Filter\Filter;
+use TestWork\ORM\Filter\Aggregator;
+use TestWork\ORM\Iterator\BufferedIterator;
+use TestWork\ORM\Iterator\UnbufferedIterator;
 
 class Query
 {
@@ -22,7 +26,7 @@ class Query
     /** @var AbstractModelObject */
     private $modelObject;
 
-    /** @var LogicalFilter|Filter */
+    /** @var Aggregator|Filter */
     private $filter;
 
     /** @var int */
@@ -47,7 +51,7 @@ class Query
     }
 
     /**
-     * @return Filter|LogicalFilter
+     * @return Filter|Aggregator
      */
     public function getFilter()
     {
@@ -66,11 +70,11 @@ class Query
     }
 
     /**
-     * @param LogicalFilter $filter
+     * @param Aggregator $filter
      *
      * @return $this
      */
-    public function setFilter( LogicalFilter $filter)
+    public function setFilter( Aggregator $filter)
     {
         $this->filter = $filter;
 
@@ -205,18 +209,18 @@ class Query
     }
 
     /**
-     * @return Iterator
+     * @return BufferedIterator
      */
     public function iterator()
     {
-        return new Iterator($this, $this->connection, $this->modelObject);
+        return new BufferedIterator($this, $this->connection, $this->modelObject);
     }
 
     /**
-     * @return IteratorUnbuffered
+     * @return UnbufferedIterator
      */
     public function iteratorUnbuffered()
     {
-        return new IteratorUnbuffered($this, $this->connection, $this->modelObject);
+        return new UnbufferedIterator($this, $this->connection, $this->modelObject);
     }
 }

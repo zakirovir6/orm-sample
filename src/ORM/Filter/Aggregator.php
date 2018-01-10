@@ -6,21 +6,21 @@
  * Time: 1:15
  */
 
-namespace TestWork\ORM;
+namespace TestWork\ORM\Filter;
 
-class LogicalFilter
+class Aggregator
 {
     const OP_AND = ' AND ';
     const OP_OR = ' OR ';
 
-    /** @var Filter[]|LogicalFilter[] */
+    /** @var Filter[]|Aggregator[] */
     private $filterStack = [];
 
     /** @var string */
     private $operation;
 
     /**
-     * LogicalFilter constructor.
+     * Aggregator constructor.
      * @param string $operation
      * @throws \Exception
      */
@@ -36,16 +36,16 @@ class LogicalFilter
 
 
     /**
-     * @param Filter|LogicalFilter $filter
+     * @param Filter|Aggregator $filter
      *
      * @throws \Exception
      */
     public function add($filter)
     {
         if ((! $filter instanceof Filter) &&
-            (! $filter instanceof LogicalFilter))
+            (! $filter instanceof Aggregator))
         {
-            throw new \Exception('Filter must be instance of Filter or LogicalFilter');
+            throw new \Exception('Filter must be instance of Filter or Aggregator');
         }
 
         $this->filterStack[] = $filter;
@@ -60,7 +60,7 @@ class LogicalFilter
     }
 
     /**
-     * @return FilterBinding[]
+     * @return Binding[]
      */
     public function getBindings()
     {
@@ -74,7 +74,7 @@ class LogicalFilter
                 continue;
             }
 
-            if ($filter instanceof LogicalFilter)
+            if ($filter instanceof Aggregator)
             {
                 $bindings = array_merge($bindings, $filter->getBindings());
                 continue;

@@ -6,10 +6,10 @@
  * Time: 20:52
  */
 
-namespace TestWork\ORM;
+namespace TestWork\ORM\Filter;
 
 
-class FilterBinding
+class Binding
 {
     /** @var string */
     public $parameter;
@@ -19,7 +19,7 @@ class FilterBinding
     public $type;
 
     /**
-     * FilterBinding constructor.
+     * Binding constructor.
      * @param string $namedPlaceholder
      * @param mixed $value
      * @param bool $type

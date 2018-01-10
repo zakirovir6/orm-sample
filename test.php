@@ -10,15 +10,15 @@ try
     $usersAboutModel = \TestWork\Models\UsersAbout::getNew();
     
     $queryUsersAboutModel = new \TestWork\ORM\Query( $connectionFactory, $usersAboutModel );
-    $filter1 = new \TestWork\ORM\LogicalFilter(\TestWork\ORM\LogicalFilter::OP_OR);
+    $filter1 = new \TestWork\ORM\Filter\Aggregator(\TestWork\ORM\Filter\Aggregator::OP_OR);
     $filter1->add($queryUsersAboutModel->makeFilter('user', '=', 100 ));
-    $filter1_1 = new \TestWork\ORM\LogicalFilter();
+    $filter1_1 = new \TestWork\ORM\Filter\Aggregator();
     $filter1_1->add($queryUsersAboutModel->makeFilter('item', '=', 'country'));
     $filter1_1->add($queryUsersAboutModel->makeFilter('value', '!=', 'Russia'));
     $filter1->add($filter1_1);
 
     $it = $queryUsersAboutModel
-        //->setFilter($filter1)
+        ->setFilter($filter1)
         ->sqlCalcFoundRows()
         ->iterator();
     foreach ( $it as $key => $item)

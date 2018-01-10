@@ -6,7 +6,7 @@
  * Time: 1:06
  */
 
-namespace TestWork\ORM;
+namespace TestWork\ORM\Filter;
 
 class Filter
 {
@@ -18,7 +18,7 @@ class Filter
     public $value;
     /** @var string */
     private $table;
-    /** @var FilterBinding */
+    /** @var Binding */
     private $binding;
 
     /**
@@ -56,7 +56,7 @@ class Filter
         }
 
         //here should be snowflake algorithm
-        $this->binding = new FilterBinding(\uniqid(':pdo_'), $value, $type);
+        $this->binding = new Binding(\uniqid(':pdo_'), $value, $type);
     }
 
     /**
@@ -68,7 +68,7 @@ class Filter
     }
 
     /**
-     * @return FilterBinding
+     * @return Binding
      */
     public function getBinding()
     {

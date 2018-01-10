@@ -6,10 +6,12 @@
  * Time: 21:57
  */
 
-namespace TestWork\ORM;
+namespace TestWork\ORM\Iterator;
 
+use TestWork\ORM\AbstractModelObject;
+use TestWork\ORM\Query;
 
-class IteratorUnbuffered implements \Iterator
+class UnbufferedIterator implements \Iterator
 {
     use IteratorTrait;
 

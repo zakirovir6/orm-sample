@@ -6,9 +6,12 @@
  * Time: 20:12
  */
 
-namespace TestWork\ORM;
+namespace TestWork\ORM\Iterator;
 
-class Iterator implements \Iterator
+use TestWork\ORM\AbstractModelObject;
+use TestWork\ORM\Query;
+
+class BufferedIterator implements \Iterator
 {
     use IteratorTrait;
 

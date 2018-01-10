@@ -6,7 +6,7 @@
  * Time: 23:29
  */
 
-namespace TestWork\ORM;
+namespace TestWork\ORM\Iterator;
 
 trait IteratorTrait
 {
