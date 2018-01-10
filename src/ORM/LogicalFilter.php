@@ -60,7 +60,7 @@ class LogicalFilter
     }
 
     /**
-     * @return array
+     * @return FilterBinding[]
      */
     public function getBindings()
     {

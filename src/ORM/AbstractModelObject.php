@@ -25,7 +25,7 @@ class AbstractModelObject
     /**
      * @return static
      */
-    final public static function getEmpty()
+    final public static function getNew()
     {
         return new static();
     }
@@ -95,12 +95,12 @@ class AbstractModelObject
      */
     public function __set( $name, $value )
     {
-        if (in_array($name, $this->getPropNames()))
+        if (!in_array($name, $this->getPropNames()))
         {
-            $this->data[$name] = $value;
+            throw new \Exception('Model ' . get_class($this) . ' doesnot have property ' . $name);
         }
 
-        throw new \Exception('Model ' . get_class($this) . ' doesnot have property ' . $name);
+        $this->data[$name] = $value;
     }
 
 

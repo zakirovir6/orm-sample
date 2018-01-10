@@ -16,25 +16,27 @@ class Filter
     public $column;
     /** @var mixed */
     public $value;
-    /** @var int */
-    public $bindingType;
     /** @var string */
-    public $namedPlaceholder;
+    private $table;
+    /** @var FilterBinding */
+    private $binding;
 
     /**
      * Filter constructor.
+     * @param string $table
      * @param string $column
      * @param string $op
      * @param mixed $value
      * @throws \Exception
      */
-    public function __construct($column, $op, $value)
+    public function __construct($table, $column, $op, $value)
     {
-        if (! in_array($op, ['=', '!=', '>', '<', '>=', '<=']))
+        if (! in_array($op, ['=', '!=', '>', '<', '>=', '<=', 'IN']))
         {
             throw new \Exception('Unsupported operator');
         }
 
+        $this->table = $table;
         $this->column = $column;
         $this->op = $op;
         switch (true)
@@ -53,10 +55,8 @@ class Filter
                 $type = \PDO::PARAM_STR;
         }
 
-        $this->value = $value;
-        $this->bindingType = $type;
         //here should be snowflake algorithm
-        $this->namedPlaceholder = \uniqid(':pdo_', true);
+        $this->binding = new FilterBinding(\uniqid(':pdo_'), $value, $type);
     }
 
     /**
@@ -64,14 +64,14 @@ class Filter
      */
     public function __toString()
     {
-        return "(`{$this->column}` {$this->op} {$this->namedPlaceholder} <{$this->value}>)";
+        return "(`{$this->table}`.`{$this->column}` {$this->op} {$this->binding->parameter})";
     }
 
     /**
-     * @return array
+     * @return FilterBinding
      */
     public function getBinding()
     {
-        return [$this->namedPlaceholder, $this->value, $this->bindingType];
+        return $this->binding;
     }
 }

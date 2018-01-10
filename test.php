@@ -6,31 +6,25 @@ $connectionFactory = new \TestWork\ConnectionFactory();
 
 try
 {
-    $usersModel = \TestWork\Models\Users::getEmpty();
+    $usersModel = \TestWork\Models\Users::getNew();
+    $usersAboutModel = \TestWork\Models\UsersAbout::getNew();
+    
+    $queryUsersAboutModel = new \TestWork\ORM\Query( $connectionFactory, $usersAboutModel );
+    $filter1 = new \TestWork\ORM\LogicalFilter(\TestWork\ORM\LogicalFilter::OP_OR);
+    $filter1->add($queryUsersAboutModel->makeFilter('user', '=', 100 ));
+    $filter1_1 = new \TestWork\ORM\LogicalFilter();
+    $filter1_1->add($queryUsersAboutModel->makeFilter('item', '=', 'country'));
+    $filter1_1->add($queryUsersAboutModel->makeFilter('value', '!=', 'Russia'));
+    $filter1->add($filter1_1);
 
-    $filter = new \TestWork\ORM\LogicalFilter();
-    $filter->add( new TestWork\ORM\Filter( 'id', '=', 10 ) );
-    $filter->add( new TestWork\ORM\Filter( 'id', '=', 20 ) );
-    $subFilter = new \TestWork\ORM\LogicalFilter( \TestWork\ORM\LogicalFilter::OP_OR );
-    $subFilter->add( new \TestWork\ORM\Filter( 'id', '=', 30 ) );
-    $subFilter->add( new \TestWork\ORM\Filter( 'id', '=', 40 ) );
-    $subFilter1 = new \TestWork\ORM\LogicalFilter(\TestWork\ORM\LogicalFilter::OP_OR);
-    $subFilter11 = new \TestWork\ORM\LogicalFilter(\TestWork\ORM\LogicalFilter::OP_OR);
-    $subFilter11->add(new \TestWork\ORM\Filter('id', '=', 111));
-    $subFilter11->add(new \TestWork\ORM\Filter('id', '=', 112));
-    $subFilter11->add(new \TestWork\ORM\Filter('id', '=', 113));
-    $subFilter12 = new \TestWork\ORM\LogicalFilter(\TestWork\ORM\LogicalFilter::OP_OR);
-    $subFilter12->add(new \TestWork\ORM\Filter('id', '=', 121));
-    $subFilter12->add(new \TestWork\ORM\Filter('id', '=', 122));
-    $subFilter12->add(new \TestWork\ORM\Filter('id', '=', 123));
-    $subFilter1->add($subFilter11);
-    $subFilter1->add($subFilter12);
-    $filter->add($subFilter1);
-
-    $filter->add($subFilter);
-
-    $query = new \TestWork\ORM\Query( $connectionFactory, $usersModel );
-    $query->filter($filter)->iterator();
+    $it = $queryUsersAboutModel
+        //->setFilter($filter1)
+        ->sqlCalcFoundRows()
+        ->iterator();
+    foreach ( $it as $key => $item)
+    {
+        $s = $item;
+    }
 
     $strFilter = (string)$filter;
     $bindings = $filter->getBindings();
