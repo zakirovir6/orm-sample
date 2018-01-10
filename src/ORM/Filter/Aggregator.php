@@ -8,12 +8,12 @@
 
 namespace TestWork\ORM\Filter;
 
-class Aggregator
+class Aggregator implements FilterInterface
 {
     const OP_AND = ' AND ';
     const OP_OR = ' OR ';
 
-    /** @var Filter[]|Aggregator[] */
+    /** @var FilterInterface[] */
     private $filterStack = [];
 
     /** @var string */
@@ -36,18 +36,12 @@ class Aggregator
 
 
     /**
-     * @param Filter|Aggregator $filter
+     * @param FilterInterface $filter
      *
      * @throws \Exception
      */
-    public function add($filter)
+    public function add(FilterInterface $filter)
     {
-        if ((! $filter instanceof Filter) &&
-            (! $filter instanceof Aggregator))
-        {
-            throw new \Exception('Filter must be instance of Filter or Aggregator');
-        }
-
         $this->filterStack[] = $filter;
     }
 
@@ -68,17 +62,7 @@ class Aggregator
 
         foreach ($this->filterStack as $filter)
         {
-            if ($filter instanceof Filter)
-            {
-                $bindings[] = $filter->getBinding();
-                continue;
-            }
-
-            if ($filter instanceof Aggregator)
-            {
-                $bindings = array_merge($bindings, $filter->getBindings());
-                continue;
-            }
+            $bindings = array_merge($bindings, $filter->getBindings());
         }
 
         return $bindings;

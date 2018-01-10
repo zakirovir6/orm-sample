@@ -44,7 +44,7 @@ class UnbufferedIterator implements \Iterator
 
     public function next()
     {
-        $this->data = $this->castToModel($this->modelObject, $this->statement->fetch(\PDO::FETCH_ASSOC));
+        $this->data = $this->fetchNext();
         $this->key++;
     }
 
@@ -75,7 +75,26 @@ class UnbufferedIterator implements \Iterator
             $this->total = $this->getTotal($this->connection);
         }
 
-        $this->data = $this->castToModel($this->modelObject, $this->statement->fetch(\PDO::FETCH_ASSOC));
+        $this->data = $this->fetchNext();
+    }
+
+    /**
+     * @return AbstractModelObject|false
+     */
+    private function fetchNext()
+    {
+        do
+        {
+            $data = $this->statement->fetch( \PDO::FETCH_ASSOC );
+            if (! $data)
+            {
+                return false;
+            }
+            $modelObject = $this->castToModel( $this->modelObject, $data );
+        }
+        while ($modelObject && $this->query->hasPostFilter() && !$this->query->getPostFilter()->test($modelObject));
+
+        return $modelObject;
     }
 
 }

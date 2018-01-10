@@ -11,19 +11,38 @@ try
     
     $queryUsersAboutModel = new \TestWork\ORM\Query( $connectionFactory, $usersAboutModel );
     $filter1 = new \TestWork\ORM\Filter\Aggregator(\TestWork\ORM\Filter\Aggregator::OP_OR);
-    $filter1->add($queryUsersAboutModel->makeFilter('user', '=', 100 ));
+    $filter1->add($queryUsersAboutModel->makeEqualsFilter('user', '=', 100 ));
     $filter1_1 = new \TestWork\ORM\Filter\Aggregator();
-    $filter1_1->add($queryUsersAboutModel->makeFilter('item', '=', 'country'));
-    $filter1_1->add($queryUsersAboutModel->makeFilter('value', '!=', 'Russia'));
+    $filter1_1->add($queryUsersAboutModel->makeEqualsFilter('item', '=', 'country'));
+    $filter1_1->add($queryUsersAboutModel->makeEqualsFilter('value', '!=', 'Russia'));
     $filter1->add($filter1_1);
+
+    $postFilter = new \TestWork\ORM\PostFilter\Filters\GravatarFilter();
 
     $it = $queryUsersAboutModel
         ->setFilter($filter1)
+        ->limit(100)
         ->sqlCalcFoundRows()
-        ->iterator();
-    foreach ( $it as $key => $item)
+        ->iteratorUnbuffered();
+
+    $userIDs = [];
+    /** @var \TestWork\Models\UsersAbout $usersAbout */
+    foreach ($it as $usersAbout)
     {
-        $s = $item;
+        $userIDs[$usersAbout->user] = null;
+    }
+
+    $usersQuery = new \TestWork\ORM\Query($connectionFactory, $usersModel);
+    $itUsers = $usersQuery
+        ->setFilter($usersQuery->makeInFilter('id', array_keys($userIDs)))
+        ->setPostFilter(new \TestWork\ORM\PostFilter\Filters\GravatarFilter(false))
+        ->limit(count($userIDs))
+        ->iteratorBuffered();
+
+    /** @var \TestWork\Models\Users $user */
+    foreach ($itUsers as $user)
+    {
+        $s = $user;
     }
 
     $strFilter = (string)$filter;

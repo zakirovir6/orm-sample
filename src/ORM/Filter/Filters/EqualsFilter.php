@@ -6,10 +6,16 @@
  * Time: 1:06
  */
 
-namespace TestWork\ORM\Filter;
+namespace TestWork\ORM\Filter\Filters;
 
-class Filter
+use TestWork\ORM\Filter\Binding;
+use TestWork\ORM\Filter\BindingTrait;
+use TestWork\ORM\Filter\FilterInterface;
+
+class EqualsFilter implements FilterInterface
 {
+    use BindingTrait;
+
     /** @var string */
     public $op;
     /** @var string */
@@ -22,7 +28,7 @@ class Filter
     private $binding;
 
     /**
-     * Filter constructor.
+     * EqualsFilter constructor.
      * @param string $table
      * @param string $column
      * @param string $op
@@ -31,7 +37,7 @@ class Filter
      */
     public function __construct($table, $column, $op, $value)
     {
-        if (! in_array($op, ['=', '!=', '>', '<', '>=', '<=', 'IN']))
+        if (! in_array($op, ['=', '!=', '>', '<', '>=', '<=']))
         {
             throw new \Exception('Unsupported operator');
         }
@@ -39,24 +45,8 @@ class Filter
         $this->table = $table;
         $this->column = $column;
         $this->op = $op;
-        switch (true)
-        {
-            case (is_int($this->value)):
-            case (is_double($this->value)):
-                $type = \PDO::PARAM_INT;
-                break;
-            case (is_string($this->value)):
-                $type = \PDO::PARAM_STR;
-                break;
-            case (is_bool($this->value)):
-                $type = \PDO::PARAM_BOOL;
-                break;
-            default:
-                $type = \PDO::PARAM_STR;
-        }
 
-        //here should be snowflake algorithm
-        $this->binding = new Binding(\uniqid(':pdo_'), $value, $type);
+        $this->binding = $this->getBinding($value);
     }
 
     /**
@@ -68,10 +58,10 @@ class Filter
     }
 
     /**
-     * @return Binding
+     * @return array|Binding[]
      */
-    public function getBinding()
+    public function getBindings()
     {
-        return $this->binding;
+        return [ $this->binding ];
     }
 }

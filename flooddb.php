@@ -62,7 +62,8 @@ $sequence = 0;
 
 for( $userId = 0; $userId < $count; $userId++)
 {
-    $email = randString(15, 30) . '@' . randString(5,10) . '.' . randString(2,5);
+    $emailDomains = ['mail.ru', 'gmail.com', 'rambler.ru', 'inbox.ru', 'list.ru', 'bk.ru', 'yahoo.com'];
+    $email = randString(5, 10) . '@' . $emailDomains[array_rand($emailDomains)];
     $password = randString(30, 40);
     $role = randString(5, 5);
     $regDate = (new DateTime())->sub((new DateInterval('P5D')))->format('Y-m-d H:i:s');

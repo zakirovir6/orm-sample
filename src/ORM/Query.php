@@ -10,10 +10,12 @@ namespace TestWork\ORM;
 
 
 use TestWork\ConnectionFactory;
-use TestWork\ORM\Filter\Filter;
-use TestWork\ORM\Filter\Aggregator;
+use TestWork\ORM\Filter\Filters\EqualsFilter;
+use TestWork\ORM\Filter\Filters\InFilter;
 use TestWork\ORM\Iterator\BufferedIterator;
 use TestWork\ORM\Iterator\UnbufferedIterator;
+use TestWork\ORM\PostFilter\FilterInterface;
+use \TestWork\ORM\Filter\FilterInterface as OrmFilterInterface;
 
 class Query
 {
@@ -26,8 +28,11 @@ class Query
     /** @var AbstractModelObject */
     private $modelObject;
 
-    /** @var Aggregator|Filter */
+    /** @var OrmFilterInterface */
     private $filter;
+
+    /** @var FilterInterface */
+    private $postFilter;
 
     /** @var int */
     private $limit = 10;
@@ -51,7 +56,7 @@ class Query
     }
 
     /**
-     * @return Filter|Aggregator
+     * @return OrmFilterInterface
      */
     public function getFilter()
     {
@@ -62,23 +67,60 @@ class Query
      * @param string $column
      * @param string $op
      * @param string $value
-     * @return Filter
+     * @return EqualsFilter
      */
-    public function makeFilter($column, $op, $value)
+    public function makeEqualsFilter( $column, $op, $value)
     {
-        return new Filter($this->modelObject->getTable(), $column, $op, $value);
+        return new EqualsFilter($this->modelObject->getTable(), $column, $op, $value);
     }
 
     /**
-     * @param Aggregator $filter
+     * @param string $column
+     * @param array $values
+     * @return InFilter
+     */
+    public function makeInFilter($column, array $values)
+    {
+        return new InFilter($this->modelObject->getTable(), $column, $values);
+    }
+
+    /**
+     * @param OrmFilterInterface $filter
      *
      * @return $this
      */
-    public function setFilter( Aggregator $filter)
+    public function setFilter( OrmFilterInterface $filter)
     {
         $this->filter = $filter;
 
         return $this;
+    }
+
+    /**
+     * @param FilterInterface $postFilter
+     * @return $this
+     */
+    public function setPostFilter(FilterInterface $postFilter)
+    {
+        $this->postFilter = $postFilter;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPostFilter()
+    {
+        return $this->postFilter !== null;
+    }
+
+    /**
+     * @return FilterInterface
+     */
+    public function getPostFilter()
+    {
+        return $this->postFilter;
     }
 
     /**
@@ -211,7 +253,7 @@ class Query
     /**
      * @return BufferedIterator
      */
-    public function iterator()
+    public function iteratorBuffered()
     {
         return new BufferedIterator($this, $this->connection, $this->modelObject);
     }

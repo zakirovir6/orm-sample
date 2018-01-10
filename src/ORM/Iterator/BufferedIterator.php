@@ -70,6 +70,13 @@ class BufferedIterator implements \Iterator
             $this->data[] = $this->castToModel($this->modelObject, $item);
         }
 
+        if ($this->query->hasPostFilter())
+        {
+            $this->data = array_filter($this->data, function(AbstractModelObject $modelObject) {
+                return $this->query->getPostFilter()->test($modelObject);
+            });
+        }
+
         if ($this->query->isSqlCalcFoundRows())
         {
             $this->total = $this->getTotal($this->connection);
