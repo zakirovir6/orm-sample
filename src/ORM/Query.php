@@ -66,7 +66,7 @@ class Query
     /**
      * @param string $column
      * @param string $op
-     * @param string $value
+     * @param mixed $value
      * @return EqualsFilter
      */
     public function makeEqualsFilter( $column, $op, $value)

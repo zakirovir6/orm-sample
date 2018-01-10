@@ -22,6 +22,10 @@ use TestWork\ORM\AbstractModelObject;
  */
 class UsersAbout extends AbstractModelObject
 {
+    const ITEM_country = 'country';
+    const ITEM_firstname = 'firstname';
+    const ITEM_state = 'state';
+
     protected $properties = [
         'id',
         'user',
