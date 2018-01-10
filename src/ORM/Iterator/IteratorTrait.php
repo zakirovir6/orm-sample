@@ -8,6 +8,9 @@
 
 namespace TestWork\ORM\Iterator;
 
+use TestWork\ORM\AbstractModelObject;
+use TestWork\ORM\PostFilter\FilterInterface;
+
 trait IteratorTrait
 {
     /**
@@ -31,5 +34,21 @@ trait IteratorTrait
         }
 
         return $total;
+    }
+
+    /**
+     * @param AbstractModelObject $modelObject
+     * @param array $data
+     * @return AbstractModelObject
+     */
+    public function castToModel(AbstractModelObject $modelObject, array $data)
+    {
+        $model = clone $modelObject;
+        foreach ($data as $prop => $value)
+        {
+            $model->{$prop} = $value;
+        }
+
+        return $model;
     }
 }

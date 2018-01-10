@@ -67,14 +67,7 @@ class BufferedIterator implements \Iterator
 
         foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $item)
         {
-            $model = clone $this->modelObject;
-
-            foreach ($item as $prop => $value)
-            {
-                $model->{$prop} = $value;
-            }
-
-            $this->data[] = $model;
+            $this->data[] = $this->castToModel($this->modelObject, $item);
         }
 
         if ($this->query->isSqlCalcFoundRows())

@@ -39,19 +39,12 @@ class UnbufferedIterator implements \Iterator
 
     public function current()
     {
-        $model = clone $this->modelObject;
-
-        foreach ($this->data as $prop => $value)
-        {
-            $model->{$prop} = $value;
-        }
-
-        return $model;
+        return $this->data;
     }
 
     public function next()
     {
-        $this->data = $this->statement->fetch(\PDO::FETCH_ASSOC);
+        $this->data = $this->castToModel($this->modelObject, $this->statement->fetch(\PDO::FETCH_ASSOC));
         $this->key++;
     }
 
@@ -80,10 +73,9 @@ class UnbufferedIterator implements \Iterator
         if ($this->query->isSqlCalcFoundRows())
         {
             $this->total = $this->getTotal($this->connection);
-
         }
 
-        $this->data = $this->statement->fetch(\PDO::FETCH_ASSOC);
+        $this->data = $this->castToModel($this->modelObject, $this->statement->fetch(\PDO::FETCH_ASSOC));
     }
 
 }
